@@ -138,23 +138,9 @@
     },
     "service_name": {
       "title": "Service Name",
-      "default": "my_microservice",
+      "default": "fsi",
       "env_names": [
         "fis_service_name"
-      ],
-      "type": "string"
-    },
-    "language": {
-      "title": "Language",
-      "default": "Croatian",
-      "env_names": [
-        "fis_language"
-      ],
-      "enum": [
-        "Greek",
-        "Croatian",
-        "French",
-        "German"
       ],
       "type": "string"
     }

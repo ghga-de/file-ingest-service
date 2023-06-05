@@ -82,9 +82,7 @@ The service requires the following configuration parameters:
 
   - **Items** *(string)*
 
-- **`service_name`** *(string)*: Default: `my_microservice`.
-
-- **`language`** *(string)*: Must be one of: `['Greek', 'Croatian', 'French', 'German']`. Default: `Croatian`.
+- **`service_name`** *(string)*: Default: `fsi`.
 
 
 ### Usage:
