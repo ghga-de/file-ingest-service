@@ -22,7 +22,7 @@ from .models import SupportedLanguages
 
 
 # Please adapt config prefix and remove unnecessary config bases:
-@config_from_yaml(prefix="my_microservice")
+@config_from_yaml(prefix="fis")
 class Config(ApiConfigBase):
     """Config parameters and their defaults."""
 
