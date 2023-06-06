@@ -82,7 +82,7 @@ The service requires the following configuration parameters:
 
   - **Items** *(string)*
 
-- **`service_name`** *(string)*: Default: `fsi`.
+- **`service_name`** *(string)*: Default: `fis`.
 
 
 ### Usage:

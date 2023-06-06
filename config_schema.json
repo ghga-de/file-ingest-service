@@ -138,7 +138,7 @@
     },
     "service_name": {
       "title": "Service Name",
-      "default": "fsi",
+      "default": "fis",
       "env_names": [
         "fis_service_name"
       ],

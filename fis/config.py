@@ -24,7 +24,7 @@ from hexkit.config import config_from_yaml
 class Config(ApiConfigBase):
     """Config parameters and their defaults."""
 
-    service_name: str = "fsi"
+    service_name: str = "fis"
 
 
 CONFIG = Config()

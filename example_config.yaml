@@ -9,5 +9,5 @@ host: 127.0.0.1
 log_level: info
 openapi_url: /openapi.json
 port: 8080
-service_name: fsi
+service_name: fis
 workers: 1
