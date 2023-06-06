@@ -12,18 +12,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Config Parameter Modeling and Parsing"""
-
-from ghga_service_commons.api import ApiConfigBase
-from hexkit.config import config_from_yaml
+"""Module hosting the dependency injection container."""
 
 
-# Please adapt config prefix and remove unnecessary config bases:
-@config_from_yaml(prefix="fis")
-class Config(ApiConfigBase):
-    """Config parameters and their defaults."""
+from hexkit.inject import ContainerBase, get_configurator, get_constructor
+from hexkit.providers.akafka import KafkaEventPublisher
 
-    service_name: str = "fis"
+from fis.adapters.outbound.event_pub import EventPubTranslator
+from fis.config import Config
 
 
-CONFIG = Config()
+class Container(ContainerBase):
+    """DI Container"""
+
+    config = get_configurator(Config)
+    event_pub_provider = get_constructor(KafkaEventPublisher, config=config)
+
+    event_publisher = get_constructor(
+        EventPubTranslator, config=config, provider=event_pub_provider
+    )
