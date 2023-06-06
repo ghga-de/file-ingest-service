@@ -13,3 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """TODO"""
+
+from fis.ports.inbound.ingest import UploadMetadataProcessorPort
+
+
+class UploadMetadataProcessor(UploadMetadataProcessorPort):
+    ...

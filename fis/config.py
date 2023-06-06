@@ -16,11 +16,19 @@
 
 from ghga_service_commons.api import ApiConfigBase
 from hexkit.config import config_from_yaml
+from pydantic import BaseSettings
+
+
+class ServiceConfig(BaseSettings):
+    """Specific configs for authentication and encryption"""
+
+    token_hashes: list[str]
+    private_key: str
 
 
 # Please adapt config prefix and remove unnecessary config bases:
 @config_from_yaml(prefix="fis")
-class Config(ApiConfigBase):
+class Config(ApiConfigBase, ServiceConfig):
     """Config parameters and their defaults."""
 
     service_name: str = "fis"

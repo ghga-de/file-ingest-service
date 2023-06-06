@@ -12,4 +12,25 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""TODO"""
+
+from abc import ABC, abstractmethod
+
+from ghga_event_schemas.pydantic_ import FileUploadValidationSuccess
+
+from fis.core import models
+
+
+class UploadMetadataProcessorPort(ABC):
+    """ """
+
+    @abstractmethod
+    async def decrypt_payload(self, *, payload: str) -> models.FileUploadMetadata:
+        ...
+
+    @abstractmethod
+    async def populate_by_event(self, *, event: FileUploadValidationSuccess):
+        ...
+
+    @abstractmethod
+    async def store_secret(self, *, file_secret: str):
+        ...
