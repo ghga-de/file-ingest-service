@@ -18,6 +18,7 @@ import json
 
 from ghga_event_schemas.pydantic_ import FileUploadValidationSuccess
 from ghga_service_commons.utils.crypt import decrypt
+from nacl.exceptions import CryptoError
 from pydantic import ValidationError
 
 from fis.config import Config
@@ -37,7 +38,7 @@ class UploadMetadataProcessor(UploadMetadataProcessorPort):
         """Decrypt upload metadata using private key"""
         try:
             decrypted = decrypt(data=encrypted.payload, key=self._config.private_key)
-        except ValueError as error:
+        except (ValueError, CryptoError) as error:
             raise self.DecryptionError() from error
 
         upload_metadata = json.loads(decrypted)
