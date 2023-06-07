@@ -17,6 +17,12 @@
 from pydantic import BaseModel
 
 
+class FileUploadMetadataEncrypted(BaseModel):
+    """Encrypted file upload metadata model"""
+
+    payload: str
+
+
 class FileUploadMetadata(BaseModel):
     """Decrypted payload model for S3 upload script output"""
 

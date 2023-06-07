@@ -20,6 +20,7 @@ from hexkit.providers.akafka import KafkaEventPublisher
 
 from fis.adapters.outbound.event_pub import EventPubTranslator
 from fis.config import Config
+from fis.core.ingest import UploadMetadataProcessor
 
 
 class Container(ContainerBase):
@@ -30,4 +31,8 @@ class Container(ContainerBase):
 
     event_publisher = get_constructor(
         EventPubTranslator, config=config, provider=event_pub_provider
+    )
+
+    upload_metadata_processor = get_constructor(
+        UploadMetadataProcessor, config=config, event_publisher=event_publisher
     )
