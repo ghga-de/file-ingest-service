@@ -1,3 +1,5 @@
 # Please only mention the non-default settings here:
 
 service_name: fis
+token_hashes: [abcdef, ghijkl]
+private_key: dummy-key

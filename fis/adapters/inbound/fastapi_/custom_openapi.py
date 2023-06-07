@@ -12,30 +12,28 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
-"""Used to define the location of the main FastAPI app object."""
-
-# flake8: noqa
-# pylint: skip-file
-
+"""
+Utils to customize openAPI script
+"""
 from typing import Any, Dict
 
-from fastapi import FastAPI
+from fastapi.openapi.utils import get_openapi
 
-from fis.adapters.inbound.fastapi_.custom_openapi import get_openapi_schema
-from fis.adapters.inbound.fastapi_.routes import router
+from fis import __version__
+from fis.config import Config
 
-app = FastAPI()
-app.include_router(router)
-
-
-def custom_openapi() -> Dict[str, Any]:
-    if app.openapi_schema:
-        return app.openapi_schema
-    openapi_schema = get_openapi_schema(app)
-    app.openapi_schema = openapi_schema
-    return app.openapi_schema
+config = Config()
 
 
-app.openapi = custom_openapi  # type: ignore [assignment]
+def get_openapi_schema(api) -> Dict[str, Any]:
+    """Generates a custom openapi schema for the service"""
+
+    return get_openapi(
+        title="File Ingest Service",
+        version=__version__,
+        description="A service to ingest s3 file upload metadata produced by the"
+        + "data-steward-kit upload command",
+        tags=[{"name": "FileIngestService"}],
+        routes=api.routes,
+    )
