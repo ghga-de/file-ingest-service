@@ -49,5 +49,5 @@ class UploadMetadataProcessorPort(ABC):
         """Send FileUploadValidationSuccess event to be processed by downstream services"""
 
     @abstractmethod
-    async def store_secret(self, *, file_secret: str):
+    async def store_secret(self, *, file_secret: str) -> str:
         """Communicate with HashiCorp Vault to store file secret and get secret ID"""
