@@ -19,17 +19,23 @@ import json
 from ghga_event_schemas.pydantic_ import FileUploadValidationSuccess
 from ghga_service_commons.utils.crypt import decrypt
 from nacl.exceptions import CryptoError
-from pydantic import ValidationError
+from pydantic import BaseSettings, ValidationError
 
-from fis.config import Config
 from fis.core import models
 from fis.ports.inbound.ingest import UploadMetadataProcessorPort
+
+
+class ServiceConfig(BaseSettings):
+    """Specific configs for authentication and encryption"""
+
+    token_hashes: list[str]
+    private_key: str
 
 
 class UploadMetadataProcessor(UploadMetadataProcessorPort):
     """Handler for S3 upload metadata processing"""
 
-    def __init__(self, *, config: Config):
+    def __init__(self, *, config: ServiceConfig):
         self._config = config
 
     async def decrypt_payload(
