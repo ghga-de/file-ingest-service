@@ -27,7 +27,8 @@ class FileUploadMetadata(BaseModel):
     """Decrypted payload model for S3 upload script output"""
 
     # get all data for now, optimize later if we don't need all of it
-    file_uuid: str
+    file_id: str
+    object_id: str
     part_size: int
     unencrypted_size: int
     encrypted_size: int
