@@ -29,7 +29,6 @@ class FileUploadMetadata(BaseModel):
     # get all data for now, optimize later if we don't need all of it
     alias: str
     file_uuid: str
-    original_path: str
     part_size: int
     unencrypted_size: int
     encrypted_size: int
