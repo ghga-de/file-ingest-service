@@ -44,9 +44,8 @@ async def test_decryption_happy():
     upload_metadata_processor = container.upload_metadata_processor()
 
     decrypted_payload = FileUploadMetadata(
-        alias="001",
-        file_uuid="abc",
-        original_path="/1.zip",
+        file_id="abc",
+        object_id="happy_little_object",
         part_size=16 * 1024**2,
         unencrypted_size=50 * 1024**2,
         encrypted_size=50 * 1024**2 + 128,
@@ -81,9 +80,8 @@ async def test_decryption_sad():
 
     # actual test code
     decrypted_payload = FileUploadMetadata(
-        alias="001",
-        file_uuid="abc",
-        original_path="/1.zip",
+        file_id="abc",
+        object_id="happy_little_object",
         part_size=16 * 1024**2,
         unencrypted_size=50 * 1024**2,
         encrypted_size=50 * 1024**2 + 128,
