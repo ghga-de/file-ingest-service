@@ -56,6 +56,14 @@ The service requires the following configuration parameters:
 
 - **`private_key`** *(string)*
 
+- **`service_name`** *(string)*: Default: `fis`.
+
+- **`service_instance_id`** *(string)*: A string that uniquely identifies this instance across all instances of this service. A globally unique Kafka client ID will be created by concatenating the service_name and the service_instance_id.
+
+- **`kafka_servers`** *(array)*: A list of connection strings to connect to Kafka bootstrap servers.
+
+  - **Items** *(string)*
+
 - **`host`** *(string)*: IP of the host. Default: `127.0.0.1`.
 
 - **`port`** *(integer)*: Port to expose the server on the specified host. Default: `8080`.
@@ -85,8 +93,6 @@ The service requires the following configuration parameters:
 - **`cors_allowed_headers`** *(array)*: A list of HTTP request headers that should be supported for cross-origin requests. Defaults to []. You can use ['*'] to allow all headers. The Accept, Accept-Language, Content-Language and Content-Type headers are always allowed for CORS requests.
 
   - **Items** *(string)*
-
-- **`service_name`** *(string)*: Default: `fis`.
 
 
 ### Usage:

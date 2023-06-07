@@ -23,15 +23,13 @@ from pydantic import ValidationError
 from fis.config import Config
 from fis.core import models
 from fis.ports.inbound.ingest import UploadMetadataProcessorPort
-from fis.ports.outbound.event_pub import EventPublisherPort
 
 
 class UploadMetadataProcessor(UploadMetadataProcessorPort):
     """Handler for S3 upload metadata processing"""
 
-    def __init__(self, *, config: Config, event_publisher: EventPublisherPort):
+    def __init__(self, *, config: Config):
         self._config = config
-        self._event_publisher = event_publisher
 
     async def decrypt_payload(
         self, *, encrypted: models.FileUploadMetadataEncrypted

@@ -13,9 +13,54 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Test dummy."""
+"""Test ingest functions"""
+
+import base64
+import os
+
+import pytest
+from ghga_service_commons.utils.crypt import encode_key, encrypt, generate_key_pair
+
+from fis.config import ServiceConfig
+from fis.core.models import FileUploadMetadata, FileUploadMetadataEncrypted
+from fis.main import get_configured_container
+from tests.fixtures.config import get_config
 
 
-def test_dummy():
-    """Just makes the CI pass."""
-    assert True
+@pytest.mark.asyncio
+async def test_decryption_happy():
+    """Test decryption with valid keypair and correct file upload metadata format."""
+
+    keypair = generate_key_pair()
+    private_key = encode_key(key=keypair.private)
+
+    patched_service_config = ServiceConfig(token_hashes=[], private_key=private_key)
+    config = get_config(sources=[patched_service_config])
+    async with get_configured_container(config=config) as container:
+        decrypted_payload = FileUploadMetadata(
+            alias="001",
+            file_uuid="abc",
+            original_path="/1.zip",
+            part_size=16 * 1024**2,
+            unencrypted_size=50 * 1024**2,
+            encrypted_size=50 * 1024**2 + 128,
+            file_secret=base64.b64encode(os.urandom(32)).decode(),
+            unencrypted_checksum="def",
+            encrypted_md5_checksums=["a", "b", "c"],
+            encrypted_sha256_checksums=["a", "b", "c"],
+        )
+
+        encrypted_payload = FileUploadMetadataEncrypted(
+            payload=encrypt(data=decrypted_payload.json(), key=keypair.public)
+        )
+        upload_metadata_processor = container.upload_metadata_processor()
+
+        processed_payload = await upload_metadata_processor.decrypt_payload(
+            encrypted=encrypted_payload
+        )
+        assert processed_payload == decrypted_payload
+
+
+@pytest.mark.asyncio
+async def test_decryption_sad():
+    """Test decryption throws correct errors for payload and key issues"""
