@@ -38,6 +38,12 @@ class UploadMetadataProcessorPort(ABC):
             message = f"Decrypted payload does not conform to expected format: {cause}."
             super().__init__(message)
 
+    class VaultCommunicationError(RuntimeError):
+        """Thrown when interaction with the vault resulted in an error"""
+
+        def __init__(self, *, message) -> None:
+            super().__init__(message)
+
     @abstractmethod
     async def decrypt_payload(
         self, *, encrypted: models.FileUploadMetadataEncrypted
