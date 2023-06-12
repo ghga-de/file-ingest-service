@@ -16,6 +16,7 @@
 
 from ghga_service_commons.api import ApiConfigBase
 from hexkit.config import config_from_yaml
+from hexkit.providers.akafka import KafkaConfig
 
 from fis.adapters.outbound.event_pub import EventPubTranslatorConfig
 from fis.adapters.outbound.vault import VaultConfig
@@ -24,7 +25,9 @@ from fis.core.ingest import ServiceConfig
 
 # Please adapt config prefix and remove unnecessary config bases:
 @config_from_yaml(prefix="fis")
-class Config(ApiConfigBase, EventPubTranslatorConfig, ServiceConfig, VaultConfig):
+class Config(
+    ApiConfigBase, EventPubTranslatorConfig, KafkaConfig, ServiceConfig, VaultConfig
+):
     """Config parameters and their defaults."""
 
     service_name: str = "fis"

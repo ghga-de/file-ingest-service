@@ -6,6 +6,9 @@ token_hashes: [abcdef, ghijkl]
 publisher_topic: file_interrogation
 publisher_type: file_validation_success
 
+service_instance_id: 001
+kafka_servers: ["kafka:9092"]
+
 vault_host: "http://127.0.0.1"
 vault_port: 8200
 vault_role_id: dummy-role
