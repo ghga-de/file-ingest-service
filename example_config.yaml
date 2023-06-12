@@ -11,7 +11,10 @@ log_level: info
 openapi_url: /openapi.json
 port: 8080
 private_key: dummy-key
+publisher_topic: file_interrogation
+publisher_type: file_validation_success
 service_name: fis
+source_bucket_id: test-staging
 token_hashes:
 - abcdef
 - ghijkl

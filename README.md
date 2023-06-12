@@ -60,11 +60,17 @@ The service requires the following configuration parameters:
 
 - **`vault_secret_id`** *(string)*: Vault secret ID to access a specific prefix.
 
+- **`private_key`** *(string)*
+
+- **`source_bucket_id`** *(string)*
+
 - **`token_hashes`** *(array)*
 
   - **Items** *(string)*
 
-- **`private_key`** *(string)*
+- **`publisher_topic`** *(string)*: Topic name expected by downstream services. Use the topic name from the interrogation room service.
+
+- **`publisher_type`** *(string)*: Type expected by downstream services. Use the type from the interrogation room service.
 
 - **`host`** *(string)*: IP of the host. Default: `127.0.0.1`.
 

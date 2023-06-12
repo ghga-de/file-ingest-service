@@ -53,6 +53,20 @@
       "writeOnly": true,
       "format": "password"
     },
+    "private_key": {
+      "title": "Private Key",
+      "env_names": [
+        "fis_private_key"
+      ],
+      "type": "string"
+    },
+    "source_bucket_id": {
+      "title": "Source Bucket Id",
+      "env_names": [
+        "fis_source_bucket_id"
+      ],
+      "type": "string"
+    },
     "token_hashes": {
       "title": "Token Hashes",
       "env_names": [
@@ -63,10 +77,21 @@
         "type": "string"
       }
     },
-    "private_key": {
-      "title": "Private Key",
+    "publisher_topic": {
+      "title": "Publisher Topic",
+      "description": "Topic name expected by downstream services. Use the topic name from the interrogation room service.",
+      "example": "file_interrogation",
       "env_names": [
-        "fis_private_key"
+        "fis_publisher_topic"
+      ],
+      "type": "string"
+    },
+    "publisher_type": {
+      "title": "Publisher Type",
+      "description": "Type expected by downstream services. Use the type from the interrogation room service.",
+      "example": "file_validation_success",
+      "env_names": [
+        "fis_publisher_type"
       ],
       "type": "string"
     },
@@ -217,8 +242,11 @@
     "vault_port",
     "vault_role_id",
     "vault_secret_id",
+    "private_key",
+    "source_bucket_id",
     "token_hashes",
-    "private_key"
+    "publisher_topic",
+    "publisher_type"
   ],
   "additionalProperties": false
 }
