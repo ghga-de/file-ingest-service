@@ -17,9 +17,9 @@
 
 from hexkit.inject import ContainerBase, get_configurator, get_constructor
 
+from fis.adapters.outbound.vault import VaultAdapter
 from fis.config import Config
 from fis.core.ingest import UploadMetadataProcessor
-from fis.adapters.outbound.vault import VaultAdapter
 
 
 class Container(ContainerBase):

@@ -17,8 +17,8 @@
 from ghga_service_commons.api import ApiConfigBase
 from hexkit.config import config_from_yaml
 
-from fis.core.ingest import ServiceConfig
 from fis.adapters.outbound.vault import VaultConfig
+from fis.core.ingest import ServiceConfig
 
 
 # Please adapt config prefix and remove unnecessary config bases:
