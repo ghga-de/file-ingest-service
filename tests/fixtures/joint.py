@@ -31,7 +31,7 @@ from ghga_service_commons.utils.crypt import (
 from ghga_service_commons.utils.simple_token import generate_token_and_hash
 from hexkit.providers.akafka.testutils import KafkaFixture, kafka_fixture  # noqa: F401
 
-from fis.config import ServiceConfig
+from fis.config import Config, ServiceConfig
 from fis.container import Container
 from fis.core.models import FileUploadMetadata, FileUploadMetadataEncrypted
 from fis.main import get_configured_container, get_rest_api
@@ -54,6 +54,7 @@ TEST_PAYLOAD = FileUploadMetadata(
 class JointFixture:
     """Holds generated test keypair and configured container"""
 
+    config: Config
     container: Container
     keypair: KeyPair
     token: str
@@ -99,6 +100,7 @@ async def joint_fixture(
 
     async with AsyncTestClient(app=api) as rest_client:
         yield JointFixture(
+            config=config,
             container=container,
             keypair=keypair,
             payload=TEST_PAYLOAD,
