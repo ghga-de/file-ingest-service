@@ -25,7 +25,7 @@ from fis.core.ingest import ServiceConfig
 
 # Please adapt config prefix and remove unnecessary config bases:
 @config_from_yaml(prefix="fis")
-class Config(  # noqa: R0901
+class Config(  # pylint: disable=too-many-ancestors
     ApiConfigBase,
     EventPubTranslatorConfig,
     KafkaConfig,
