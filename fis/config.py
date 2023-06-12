@@ -25,8 +25,12 @@ from fis.core.ingest import ServiceConfig
 
 # Please adapt config prefix and remove unnecessary config bases:
 @config_from_yaml(prefix="fis")
-class Config(
-    ApiConfigBase, EventPubTranslatorConfig, KafkaConfig, ServiceConfig, VaultConfig
+class Config(  # noqa: R0901
+    ApiConfigBase,
+    EventPubTranslatorConfig,
+    KafkaConfig,
+    ServiceConfig,
+    VaultConfig,
 ):
     """Config parameters and their defaults."""
 
