@@ -48,14 +48,14 @@ def get_rest_api(*, config: Config) -> FastAPI:
         api.openapi_schema = openapi_schema
         return api.openapi_schema
 
-    api.openapi = custom_openapi  # type: ignore [assignment]
+    api.openapi = custom_openapi  # type: ignore [method-assign]
 
     return api
 
 
 async def run_rest():
     """Run the HTTP REST API."""
-    config = Config()
+    config = Config()  # type: ignore [call-arg]
 
     async with get_configured_container(config=config) as container:
         container.wire(

@@ -21,7 +21,7 @@ from fastapi.openapi.utils import get_openapi
 from fis import __version__
 from fis.config import Config
 
-config = Config()  # type: ignore [call-args]
+config = Config()  # type: ignore [call-arg]
 
 
 def get_openapi_schema(api) -> dict[str, Any]:
