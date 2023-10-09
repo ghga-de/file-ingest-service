@@ -25,7 +25,6 @@ from fis.container import Container
 
 def get_configured_container(*, config: Config) -> Container:
     """Create and configure a DI container."""
-
     container = Container()
     container.config.load_config(config)
 
@@ -38,7 +37,6 @@ def get_rest_api(*, config: Config) -> FastAPI:
     For full functionality of the api, run in the context of an CI container with
     correct wireing and initialized resources (see the run_api function below).
     """
-
     api = FastAPI()
     api.include_router(router)
     configure_app(api, config=config)
@@ -57,7 +55,6 @@ def get_rest_api(*, config: Config) -> FastAPI:
 
 async def run_rest():
     """Run the HTTP REST API."""
-
     config = Config()
 
     async with get_configured_container(config=config) as container:

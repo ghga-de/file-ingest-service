@@ -12,22 +12,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Interface for broadcasting events to other services."""
+"""Short description of package"""
 
-from abc import ABC, abstractmethod
+from importlib.metadata import version
 
-from fis.core.models import FileUploadMetadata
-
-
-class EventPublisherPort(ABC):
-    """A port through which ingest events are communicated with the file backend services."""
-
-    @abstractmethod
-    async def send_file_metadata(
-        self,
-        *,
-        upload_metadata: FileUploadMetadata,
-        source_bucket_id: str,
-        secret_id: str
-    ):
-        """Send FileUploadValidationSuccess event to downstream services"""
+__version__ = version(__package__)
