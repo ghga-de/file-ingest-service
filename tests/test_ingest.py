@@ -18,7 +18,7 @@
 import pytest
 from ghga_service_commons.utils.crypt import encrypt, generate_key_pair
 
-from fis.core.models import FileUploadMetadataEncrypted
+from fis.core.models import EncryptedPayload
 from tests.fixtures.joint import (  # noqa: F401
     JointFixture,
     KafkaFixture,
@@ -31,7 +31,7 @@ from tests.fixtures.joint import (  # noqa: F401
 async def test_decryption_happy(joint_fixture: JointFixture):  # noqa: F811
     """Test decryption with valid keypair and correct file upload metadata format."""
     upload_metadata_processor = (
-        await joint_fixture.container.upload_metadata_processor()
+        await joint_fixture.container.legacy_upload_metadata_processor()
     )
 
     processed_payload = await upload_metadata_processor.decrypt_payload(
@@ -44,11 +44,11 @@ async def test_decryption_happy(joint_fixture: JointFixture):  # noqa: F811
 async def test_decryption_sad(joint_fixture: JointFixture):  # noqa: F811
     """Test decryption throws correct errors for payload and key issues"""
     upload_metadata_processor = (
-        await joint_fixture.container.upload_metadata_processor()
+        await joint_fixture.container.legacy_upload_metadata_processor()
     )
 
     # test faulty payload
-    encrypted_payload = FileUploadMetadataEncrypted(
+    encrypted_payload = EncryptedPayload(
         payload=encrypt(
             data=joint_fixture.payload.json(exclude={"file_secret"}),
             key=joint_fixture.keypair.public,
@@ -61,7 +61,7 @@ async def test_decryption_sad(joint_fixture: JointFixture):  # noqa: F811
     # test wrong key
     keypair2 = generate_key_pair()
 
-    encrypted_payload = FileUploadMetadataEncrypted(
+    encrypted_payload = EncryptedPayload(
         payload=encrypt(data=joint_fixture.payload.json(), key=keypair2.public)
     )
 

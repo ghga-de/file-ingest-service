@@ -33,11 +33,11 @@ from hexkit.providers.akafka.testutils import KafkaFixture, kafka_fixture  # noq
 
 from fis.config import Config, ServiceConfig
 from fis.container import Container
-from fis.core.models import FileUploadMetadata, FileUploadMetadataEncrypted
+from fis.core.models import EncryptedPayload, LegacyUploadMetadata
 from fis.main import get_configured_container, get_rest_api
 from tests.fixtures.config import get_config
 
-TEST_PAYLOAD = FileUploadMetadata(
+TEST_PAYLOAD = LegacyUploadMetadata(
     file_id="abc",
     object_id="happy_little_object",
     part_size=16 * 1024**2,
@@ -58,8 +58,8 @@ class JointFixture:
     container: Container
     keypair: KeyPair
     token: str
-    payload: FileUploadMetadata
-    encrypted_payload: FileUploadMetadataEncrypted
+    payload: LegacyUploadMetadata
+    encrypted_payload: EncryptedPayload
     kafka: KafkaFixture
     rest_client: httpx.AsyncClient
 
@@ -88,7 +88,7 @@ async def joint_fixture(
         ]
     )
 
-    encrypted_payload = FileUploadMetadataEncrypted(
+    encrypted_payload = EncryptedPayload(
         payload=encrypt(
             data=TEST_PAYLOAD.json(),
             key=keypair.public,

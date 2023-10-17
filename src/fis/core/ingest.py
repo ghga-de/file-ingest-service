@@ -46,6 +46,54 @@ class ServiceConfig(BaseSettings):
     )
 
 
+class LegacyUploadMetadataProcessor(UploadMetadataProcessorPort):
+    """Handler for S3 upload metadata processing"""
+
+    def __init__(
+        self,
+        *,
+        config: ServiceConfig,
+        event_publisher: EventPublisherPort,
+        vault_adapter: VaultAdapterPort,
+    ):
+        self._config = config
+        self._event_publisher = event_publisher
+        self._vault_adapter = vault_adapter
+
+    async def decrypt_payload(
+        self, *, encrypted: models.EncryptedPayload
+    ) -> models.LegacyUploadMetadata:
+        """Decrypt upload metadata using private key"""
+        try:
+            decrypted = decrypt(data=encrypted.payload, key=self._config.private_key)
+        except (ValueError, CryptoError) as error:
+            raise self.DecryptionError() from error
+
+        upload_metadata = json.loads(decrypted)
+
+        try:
+            return models.LegacyUploadMetadata(**upload_metadata)
+        except ValidationError as error:
+            raise self.WrongDecryptedFormatError(cause=str(error)) from error
+
+    async def populate_by_event(
+        self, *, upload_metadata: models.LegacyUploadMetadata, secret_id: str
+    ):
+        """Send FileUploadValidationSuccess event to be processed by downstream services"""
+        await self._event_publisher.send_file_metadata(
+            secret_id=secret_id,
+            source_bucket_id=self._config.source_bucket_id,
+            upload_metadata=upload_metadata,
+        )
+
+    async def store_secret(self, *, file_secret: str) -> str:
+        """Communicate with HashiCorp Vault to store file secret and get secret ID"""
+        try:
+            return self._vault_adapter.store_secret(secret=file_secret)
+        except self._vault_adapter.SecretInsertionError as error:
+            raise self.VaultCommunicationError(message=str(error)) from error
+
+
 class UploadMetadataProcessor(UploadMetadataProcessorPort):
     """Handler for S3 upload metadata processing"""
 
@@ -61,8 +109,8 @@ class UploadMetadataProcessor(UploadMetadataProcessorPort):
         self._vault_adapter = vault_adapter
 
     async def decrypt_payload(
-        self, *, encrypted: models.FileUploadMetadataEncrypted
-    ) -> models.FileUploadMetadata:
+        self, *, encrypted: models.EncryptedPayload
+    ) -> models.UploadMetadata:
         """Decrypt upload metadata using private key"""
         try:
             decrypted = decrypt(data=encrypted.payload, key=self._config.private_key)
@@ -72,12 +120,21 @@ class UploadMetadataProcessor(UploadMetadataProcessorPort):
         upload_metadata = json.loads(decrypted)
 
         try:
-            return models.FileUploadMetadata(**upload_metadata)
+            return models.UploadMetadata(**upload_metadata)
         except ValidationError as error:
             raise self.WrongDecryptedFormatError(cause=str(error)) from error
 
+    async def decrypt_secret(self, *, encrypted: models.EncryptedPayload) -> str:
+        """TODO"""
+        try:
+            decrypted = decrypt(data=encrypted.payload, key=self._config.private_key)
+        except (ValueError, CryptoError) as error:
+            raise self.DecryptionError() from error
+
+        return json.loads(decrypted)["file_secret"]
+
     async def populate_by_event(
-        self, *, upload_metadata: models.FileUploadMetadata, secret_id: str
+        self, *, upload_metadata: models.UploadMetadata, secret_id: str
     ):
         """Send FileUploadValidationSuccess event to be processed by downstream services"""
         await self._event_publisher.send_file_metadata(
