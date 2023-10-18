@@ -62,7 +62,9 @@ async def test_api_call(monkeypatch, joint_fixture: JointFixture):  # noqa: F811
         )
         async with event_recorder:
             response = await joint_fixture.rest_client.post(
-                "/ingest", json=joint_fixture.encrypted_payload.dict(), headers=headers
+                "/legacy/ingest",
+                json=joint_fixture.encrypted_payload.dict(),
+                headers=headers,
             )
 
     assert response.status_code == 202
@@ -98,7 +100,7 @@ async def test_api_call(monkeypatch, joint_fixture: JointFixture):  # noqa: F811
 
     # test missing authorization
     response = await joint_fixture.rest_client.post(
-        "/ingest", json=joint_fixture.encrypted_payload.dict()
+        "/legacy/ingest", json=joint_fixture.encrypted_payload.dict()
     )
     assert response.status_code == 403
 
@@ -107,6 +109,6 @@ async def test_api_call(monkeypatch, joint_fixture: JointFixture):  # noqa: F811
         update={"payload": "abcdefghijklmn"}
     )
     response = await joint_fixture.rest_client.post(
-        "/ingest", json=nonsense_payload.dict(), headers=headers
+        "/legacy/ingest", json=nonsense_payload.dict(), headers=headers
     )
     assert response.status_code == 422
