@@ -43,7 +43,7 @@ async def health():
     "/legacy/ingest",
     summary="Processes encrypted output data from the S3 upload script and ingests it "
     + "into the Encryption Key Store, Internal File Registry and Download Controller.",
-    operation_id="ingestFileUploadMetadata",
+    operation_id="ingestLegacyFileUploadMetadata",
     tags=["FileIngestService"],
     status_code=status.HTTP_202_ACCEPTED,
     response_description="Received and decrypted data successfully.",
@@ -123,12 +123,11 @@ async def ingest_metadata(
 
 @router.post(
     "/federated/ingest_secret",
-    summary="Processes encrypted output data from the S3 upload script and ingests it "
-    + "into the Encryption Key Store, Internal File Registry and Download Controller.",
-    operation_id="ingestFileUploadMetadata",
+    summary="Store file encryption/decryption secret and return secret ID.",
+    operation_id="ingestSecret",
     tags=["FileIngestService"],
     status_code=status.HTTP_200_OK,
-    response_description="Received and decrypted data successfully.",
+    response_description="Received and stored secret successfully.",
 )
 @inject
 async def ingest_secret(
