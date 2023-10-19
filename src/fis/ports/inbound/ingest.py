@@ -46,12 +46,6 @@ class UploadMetadataProcessorPort(Generic[UploadMetadataModel]):
             super().__init__(message)
 
     @abstractmethod
-    async def decrypt_payload(
-        self, *, encrypted: models.EncryptedPayload
-    ) -> UploadMetadataModel:
-        """Decrypt upload metadata using private key"""
-
-    @abstractmethod
     async def populate_by_event(
         self, *, upload_metadata: UploadMetadataModel, secret_id: str
     ):
