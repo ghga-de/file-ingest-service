@@ -16,14 +16,19 @@
 
 """Test actual API call and event publishing"""
 
+import base64
+import os
+
 import pytest
 from ghga_event_schemas.pydantic_ import FileUploadValidationSuccess
+from ghga_service_commons.utils.crypt import encrypt
 from hexkit.providers.akafka.testutils import (
     EventRecorder,
     ExpectedEvent,
     check_recorded_events,
 )
 
+from fis.core.models import EncryptedPayload, LegacyUploadMetadata, UploadMetadata
 from tests.fixtures.joint import (  # noqa: F401
     JointFixture,
     KafkaFixture,
@@ -42,13 +47,23 @@ async def test_health_check(joint_fixture: JointFixture):  # noqa: F811
 
 
 @pytest.mark.asyncio
-async def test_api_call(monkeypatch, joint_fixture: JointFixture):  # noqa: F811
+async def test_legacy_api_call(monkeypatch, joint_fixture: JointFixture):  # noqa: F811
     """Test functionality with incoming API call"""
+    payload = LegacyUploadMetadata(
+        **joint_fixture.payload.dict(),
+        file_secret=base64.b64encode(os.urandom(32)).decode("utf-8"),
+    )
+    encrypted_payload = EncryptedPayload(
+        payload=encrypt(
+            data=payload.json(),
+            key=joint_fixture.keypair.public,
+        )
+    )
+
     event_recorder = EventRecorder(
         kafka_servers=joint_fixture.kafka.config.kafka_servers,
         topic=joint_fixture.config.publisher_topic,
     )
-
     secret_id = "very_secret_id"
 
     # test happy path
@@ -63,7 +78,7 @@ async def test_api_call(monkeypatch, joint_fixture: JointFixture):  # noqa: F811
         async with event_recorder:
             response = await joint_fixture.rest_client.post(
                 "/legacy/ingest",
-                json=joint_fixture.encrypted_payload.dict(),
+                json=encrypted_payload.dict(),
                 headers=headers,
             )
 
@@ -100,14 +115,12 @@ async def test_api_call(monkeypatch, joint_fixture: JointFixture):  # noqa: F811
 
     # test missing authorization
     response = await joint_fixture.rest_client.post(
-        "/legacy/ingest", json=joint_fixture.encrypted_payload.dict()
+        "/legacy/ingest", json=encrypted_payload.dict()
     )
     assert response.status_code == 403
 
     # test malformed payload
-    nonsense_payload = joint_fixture.encrypted_payload.copy(
-        update={"payload": "abcdefghijklmn"}
-    )
+    nonsense_payload = encrypted_payload.copy(update={"payload": "abcdefghijklmn"})
     response = await joint_fixture.rest_client.post(
         "/legacy/ingest", json=nonsense_payload.dict(), headers=headers
     )
