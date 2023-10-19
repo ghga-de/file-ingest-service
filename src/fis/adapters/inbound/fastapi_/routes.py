@@ -85,7 +85,7 @@ async def ingest_legacy_metadata(
 
 
 @router.post(
-    "/federated/ingest_secret",
+    "/federated/ingest_metadata",
     summary="Processes encrypted output data from the S3 upload script and ingests it "
     + "into the Encryption Key Store, Internal File Registry and Download Controller.",
     operation_id="ingestFileUploadMetadata",

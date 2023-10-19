@@ -130,4 +130,4 @@ class UploadMetadataProcessor(UploadMetadataProcessorBase):
         except (ValueError, CryptoError) as error:
             raise self.DecryptionError() from error
 
-        return json.loads(decrypted)["file_secret"]
+        return decrypted
