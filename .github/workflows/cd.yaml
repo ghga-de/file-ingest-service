@@ -60,6 +60,9 @@ jobs:
       - uses: actions/checkout@v3
         name: Check out code
 
+      - name: Create Certificate File
+        run: echo "${{ secrets.VAULT_CA_CERT }}" > vault-ca.crt
+
       - uses: docker/setup-qemu-action@v2
         name: Set up QEMU
 
