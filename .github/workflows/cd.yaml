@@ -33,8 +33,14 @@ jobs:
         name: Verify tag format
         # format must be compatible with semantic versioning
         run: |
-          SEMVER_REGEX="^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-((?:0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
-          if echo "${{ steps.get_version_tag.outputs.version }}" | grep -Eq "$SEMVER_REGEX"; then
+          match_status=$(echo "${{ steps.get_version_tag.outputs.version }}" | awk 'BEGIN {
+            # Define the regex pattern for semantic versioning
+            pattern = "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
+          } 
+          $0 ~ pattern { print "1"; exit }
+          $0 !~ pattern { print "0"; exit }')
+
+          if [ "$match_status" -eq "1" ]; then
             echo "Tag format is valid"
           else
             echo "Invalid tag format: ${{ steps.get_version_tag.outputs.version }}"
