@@ -28,7 +28,7 @@ RUN python -m build
 # creating running container
 FROM python:3.10.9-slim-bullseye
 
-COPY vault-ca.crt /usr/local/share/ca-certificates/
+COPY ./vault-ca.crt /usr/local/share/ca-certificates/
 RUN update-ca-certificates
 
 # update and install dependencies
