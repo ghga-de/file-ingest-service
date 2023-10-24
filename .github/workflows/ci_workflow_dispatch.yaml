@@ -1,6 +1,6 @@
-name: Build on PR or dispatch 
+name: Build on PR or dispatch
 
-on: 
+on:
   pull_request:
     types:
       - opened
