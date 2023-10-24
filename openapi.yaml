@@ -51,12 +51,12 @@ info:
   description: A service to ingest s3 file upload metadata produced by thedata-steward-kit
     upload command
   title: File Ingest Service
-  version: 0.1.5
+  version: 0.1.6
 openapi: 3.0.2
 paths:
   /federated/ingest_metadata:
     post:
-      description: Decrypt payload, process metadata, file secret and send success
+      description: Decrypt payload, process metadata, file secret id and send success
         event
       operationId: ingestFileUploadMetadata
       requestBody:
@@ -85,8 +85,8 @@ paths:
       - FileIngestService
   /federated/ingest_secret:
     post:
-      description: Decrypt payload, process metadata, file secret and send success
-        event
+      description: Decrypt payload and deposit file secret in exchange for a secret
+        id
       operationId: ingestSecret
       requestBody:
         content:
