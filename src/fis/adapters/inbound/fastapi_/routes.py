@@ -101,7 +101,7 @@ async def ingest_metadata(
     ),
     _token: IngestTokenAuthContext = require_token,
 ):
-    """Decrypt payload, process metadata, file secret and send success event"""
+    """Decrypt payload, process metadata, file secret id and send success event"""
     try:
         decrypted_metadata = await upload_metadata_processor.decrypt_payload(
             encrypted=encrypted_payload
@@ -137,7 +137,7 @@ async def ingest_secret(
     ),
     _token: IngestTokenAuthContext = require_token,
 ):
-    """Decrypt payload, process metadata, file secret and send success event"""
+    """Decrypt payload and deposit file secret in exchange for a secret id"""
     file_secret = await upload_metadata_processor.decrypt_secret(
         encrypted=encrypted_payload
     )

@@ -105,13 +105,12 @@ async def test_api_calls(monkeypatch, joint_fixture: JointFixture):  # noqa: F81
         topic=joint_fixture.config.publisher_topic,
     )
 
-    with monkeypatch.context() as patch:
-        async with event_recorder:
-            response = await joint_fixture.rest_client.post(
-                "/federated/ingest_metadata",
-                json=encrypted_payload.dict(),
-                headers=headers,
-            )
+    async with event_recorder:
+        response = await joint_fixture.rest_client.post(
+            "/federated/ingest_metadata",
+            json=encrypted_payload.dict(),
+            headers=headers,
+        )
 
     assert response.status_code == 202
     assert len(event_recorder.recorded_events) == 1
