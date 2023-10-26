@@ -45,6 +45,11 @@ class ServiceConfig(BaseSettings):
         description="List of token hashes corresponding to the tokens that can be used "
         + "to authenticate calls to this service.",
     )
+    vault_path_prefix: str = Field(
+        ...,
+        description="Path prefix without leading or trailing slashes where secrets should"
+        + " be stored in the vault.",
+    )
 
 
 class UploadMetadataProcessorBase(
@@ -79,7 +84,9 @@ class UploadMetadataProcessorBase(
     async def store_secret(self, *, file_secret: str) -> str:
         """Communicate with HashiCorp Vault to store file secret and get secret ID"""
         try:
-            return self._vault_adapter.store_secret(secret=file_secret)
+            return self._vault_adapter.store_secret(
+                secret=file_secret, prefix=self._config.vault_path_prefix
+            )
         except self._vault_adapter.SecretInsertionError as error:
             raise self.VaultCommunicationError(message=str(error)) from error
 

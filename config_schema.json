@@ -78,6 +78,14 @@
         "type": "string"
       }
     },
+    "vault_path_prefix": {
+      "title": "Vault Path Prefix",
+      "description": "Path prefix without leading or trailing slashes where secrets should be stored in the vault.",
+      "env_names": [
+        "fis_vault_path_prefix"
+      ],
+      "type": "string"
+    },
     "service_name": {
       "title": "Service Name",
       "default": "fis",
@@ -268,6 +276,7 @@
     "private_key",
     "source_bucket_id",
     "token_hashes",
+    "vault_path_prefix",
     "service_instance_id",
     "kafka_servers",
     "publisher_topic",
