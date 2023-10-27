@@ -63,7 +63,7 @@ async def test_api_calls(monkeypatch, joint_fixture: JointFixture):  # noqa: F81
         # patch vault call with mock
         patch.setattr(
             "fis.adapters.outbound.vault.client.VaultAdapter.store_secret",
-            lambda self, secret, prefix: secret_id,
+            lambda self, secret: secret_id,
         )
         response = await joint_fixture.rest_client.post(
             "/federated/ingest_secret",
@@ -184,7 +184,7 @@ async def test_legacy_api_calls(monkeypatch, joint_fixture: JointFixture):  # no
     with monkeypatch.context() as patch:
         patch.setattr(
             "fis.adapters.outbound.vault.client.VaultAdapter.store_secret",
-            lambda self, secret, prefix: secret_id,
+            lambda self, secret: secret_id,
         )
         async with event_recorder:
             response = await joint_fixture.rest_client.post(

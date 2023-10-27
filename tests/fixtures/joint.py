@@ -73,7 +73,6 @@ async def joint_fixture(
         source_bucket_id="test-staging",
         private_key=private_key,
         token_hashes=[token_hash],
-        vault_path_prefix="ekss",
     )
     config = get_config(sources=[kafka_fixture.config, service_config])
     container = get_configured_container(config=config)

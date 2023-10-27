@@ -51,6 +51,14 @@
         }
       ]
     },
+    "vault_path": {
+      "title": "Vault Path",
+      "description": "Path without leading or trailing slashes where secrets should be stored in the vault.",
+      "env_names": [
+        "fis_vault_path"
+      ],
+      "type": "string"
+    },
     "private_key": {
       "title": "Private Key",
       "description": "Base64 encoded private key of the keypair whose public key is used to encrypt the payload.",
@@ -77,14 +85,6 @@
       "items": {
         "type": "string"
       }
-    },
-    "vault_path_prefix": {
-      "title": "Vault Path Prefix",
-      "description": "Path prefix without leading or trailing slashes where secrets should be stored in the vault.",
-      "env_names": [
-        "fis_vault_path_prefix"
-      ],
-      "type": "string"
     },
     "service_name": {
       "title": "Service Name",
@@ -273,10 +273,10 @@
     "vault_url",
     "vault_role_id",
     "vault_secret_id",
+    "vault_path",
     "private_key",
     "source_bucket_id",
     "token_hashes",
-    "vault_path_prefix",
     "service_instance_id",
     "kafka_servers",
     "publisher_topic",
