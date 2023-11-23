@@ -62,7 +62,7 @@ The service requires the following configuration parameters:
   ```
 
 
-- **`vault_role_id`** *(string, format: password)*: Vault role ID to access a specific prefix.
+- **`vault_role_id`** *(string, format: password)*: Vault role ID to access a specific prefix. Default: `null`.
 
 
   Examples:
@@ -72,7 +72,7 @@ The service requires the following configuration parameters:
   ```
 
 
-- **`vault_secret_id`** *(string, format: password)*: Vault secret ID to access a specific prefix.
+- **`vault_secret_id`** *(string, format: password)*: Vault secret ID to access a specific prefix. Default: `null`.
 
 
   Examples:
@@ -99,6 +99,8 @@ The service requires the following configuration parameters:
 
 
 - **`vault_path`** *(string)*: Path without leading or trailing slashes where secrets should be stored in the vault.
+
+- **`vault_kube_role`** *(string)*: Vault role name used for Kubernetes authentication. Default: `null`.
 
 - **`private_key`** *(string)*: Base64 encoded private key of the keypair whose public key is used to encrypt the payload.
 
