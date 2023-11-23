@@ -55,8 +55,10 @@
     },
     "vault_kube_role": {
       "default": null,
-      "description": "Vault role name used for Kubernetes authentication.",
-      "example": "file-ingest-role",
+      "description": "Vault role name used for Kubernetes authentication",
+      "examples": [
+        "file-ingest-role"
+      ],
       "title": "Vault Kube Role",
       "type": "string"
     },
