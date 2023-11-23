@@ -26,8 +26,6 @@ from pydantic_settings import BaseSettings
 
 from fis.ports.outbound.vault.client import VaultAdapterPort
 
-SA_TOKEN_PATH = "/var/run/secrets/kubernetes.io/serviceaccount/token"  # noqa: S105
-
 
 class VaultConfig(BaseSettings):
     """Configuration for HashiCorp Vault connection"""
@@ -64,6 +62,10 @@ class VaultConfig(BaseSettings):
         examples=["file-ingest-role"],
         description="Vault role name used for Kubernetes authentication",
     )
+    service_account_token_path: Path = Field(
+        "/var/run/secrets/kubernetes.io/serviceaccount/token",
+        description="Path to service account token used by kube auth adapter.",
+    )
 
 
 class VaultAdapter(VaultAdapterPort):
@@ -74,9 +76,22 @@ class VaultAdapter(VaultAdapterPort):
         self._client = hvac.Client(url=config.vault_url, verify=config.vault_verify)
         self._path = config.vault_path
 
-        self._kube_role = config.vault_kube_role
-        self._role_id = config.vault_role_id.get_secret_value()
-        self._secret_id = config.vault_secret_id.get_secret_value()
+        kube_role = config.vault_kube_role
+        if kube_role:
+            # use kube role and service account token
+            self._kube_role = kube_role
+            self._kube_adapter = Kubernetes(self._client.adapter)
+            self._service_account_token_path = config.service_account_token_path
+        else:
+            # use role and secret ID instead
+            self._role_id = config.vault_role_id.get_secret_value()
+            self._secret_id = config.vault_secret_id.get_secret_value()
+
+            if not all((self._role_id, self._secret_id)):
+                raise ValueError(
+                    "There is no way to log in to vault:\n"
+                    + "Neither kube role nor both role and secret ID were provided."
+                )
 
     def _check_auth(self):
         """Check if authentication timed out and re-authenticate if needed"""
@@ -86,10 +101,11 @@ class VaultAdapter(VaultAdapterPort):
     def _login(self):
         """Log in using Kubernetes Auth or AppRole"""
         if self._kube_role:
-            jwt = open(SA_TOKEN_PATH).read()  # noqa: SIM115
-            Kubernetes(self._client.adapter).login(role=self._kube_role, jwt=jwt)
+            with self._service_account_token_path.open() as token_file:
+                jwt = token_file.read()
+            self._kube_adapter.login(role=self._kube_role, jwt=jwt)
 
-        elif self._role_id and self._secret_id:
+        else:
             self._client.auth.approle.login(
                 role_id=self._role_id, secret_id=self._secret_id
             )

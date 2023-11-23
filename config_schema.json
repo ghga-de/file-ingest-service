@@ -62,6 +62,13 @@
       "title": "Vault Kube Role",
       "type": "string"
     },
+    "service_account_token_path": {
+      "default": "/var/run/secrets/kubernetes.io/serviceaccount/token",
+      "description": "Path to service account token used by kube auth adapter.",
+      "format": "path",
+      "title": "Service Account Token Path",
+      "type": "string"
+    },
     "private_key": {
       "description": "Base64 encoded private key of the keypair whose public key is used to encrypt the payload.",
       "title": "Private Key",
