@@ -25,6 +25,7 @@ source_bucket_id: test-staging
 token_hashes:
 - abcdef
 - ghijkl
+vault_kube_role: dummy-role
 vault_path: ekss
 vault_role_id: '**********'
 vault_secret_id: '**********'
