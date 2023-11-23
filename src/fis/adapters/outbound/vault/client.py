@@ -20,10 +20,13 @@ from uuid import uuid4
 
 import hvac
 import hvac.exceptions
+from hvac.api.auth_methods import Kubernetes
 from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings
 
 from fis.ports.outbound.vault.client import VaultAdapterPort
+
+SA_TOKEN_PATH = "/var/run/secrets/kubernetes.io/serviceaccount/token"  # noqa: S105
 
 
 class VaultConfig(BaseSettings):
@@ -35,12 +38,12 @@ class VaultConfig(BaseSettings):
         description="URL of the vault instance to connect to",
     )
     vault_role_id: SecretStr = Field(
-        ...,
+        None,
         examples=["example_role"],
         description="Vault role ID to access a specific prefix",
     )
     vault_secret_id: SecretStr = Field(
-        ...,
+        None,
         examples=["example_secret"],
         description="Vault secret ID to access a specific prefix",
     )
@@ -56,6 +59,11 @@ class VaultConfig(BaseSettings):
         description="Path without leading or trailing slashes where secrets should"
         + " be stored in the vault.",
     )
+    vault_kube_role: str = Field(
+        None,
+        examples=["file-ingest-role"],
+        description="Vault role name used for Kubernetes authentication",
+    )
 
 
 class VaultAdapter(VaultAdapterPort):
@@ -66,6 +74,7 @@ class VaultAdapter(VaultAdapterPort):
         self._client = hvac.Client(url=config.vault_url, verify=config.vault_verify)
         self._path = config.vault_path
 
+        self._kube_role = config.vault_kube_role
         self._role_id = config.vault_role_id.get_secret_value()
         self._secret_id = config.vault_secret_id.get_secret_value()
 
@@ -75,10 +84,15 @@ class VaultAdapter(VaultAdapterPort):
             self._login()
 
     def _login(self):
-        """Log in using role ID and secret ID"""
-        self._client.auth.approle.login(
-            role_id=self._role_id, secret_id=self._secret_id
-        )
+        """Log in using Kubernetes Auth or AppRole"""
+        if self._kube_role:
+            jwt = open(SA_TOKEN_PATH).read()  # noqa: SIM115
+            Kubernetes(self._client.adapter).login(role=self._kube_role, jwt=jwt)
+
+        elif self._role_id and self._secret_id:
+            self._client.auth.approle.login(
+                role_id=self._role_id, secret_id=self._secret_id
+            )
 
     def store_secret(self, *, secret: str) -> str:
         """
