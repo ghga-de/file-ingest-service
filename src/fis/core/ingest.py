@@ -50,7 +50,7 @@ class ServiceConfig(BaseSettings):
         ...,
         description="S3 endpoint alias of the object storage node the bucket and "
         + "object(s) corresponding to the upload metadata have been uploaded to. "
-        + "This should currently point to the staging bucket.",
+        + "This should point to a node containing a staging bucket.",
     )
 
 

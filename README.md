@@ -120,7 +120,7 @@ The service requires the following configuration parameters:
 
   - **Items** *(string)*
 
-- **`selected_storage_alias`** *(string)*: S3 endpoint alias of the object storage node the bucket and object(s) corresponding to the upload metadata have been uploaded to. This should currently point to the staging bucket.
+- **`selected_storage_alias`** *(string)*: S3 endpoint alias of the object storage node the bucket and object(s) corresponding to the upload metadata have been uploaded to. This should point to a node containing a staging bucket.
 
 - **`service_name`** *(string)*: Default: `"fis"`.
 

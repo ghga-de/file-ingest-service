@@ -88,7 +88,7 @@
       "type": "array"
     },
     "selected_storage_alias": {
-      "description": "S3 endpoint alias of the object storage node the bucket and object(s) corresponding to the upload metadata have been uploaded to. This should currently point to the staging bucket.",
+      "description": "S3 endpoint alias of the object storage node the bucket and object(s) corresponding to the upload metadata have been uploaded to. This should point to a node containing a staging bucket.",
       "title": "Selected Storage Alias",
       "type": "string"
     },
