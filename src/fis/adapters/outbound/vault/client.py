@@ -85,12 +85,11 @@ class VaultAdapter(VaultAdapterPort):
             # use role and secret ID instead
             self._role_id = config.vault_role_id.get_secret_value()
             self._secret_id = config.vault_secret_id.get_secret_value()
-
-            if not all((self._role_id, self._secret_id)):
-                raise ValueError(
-                    "There is no way to log in to vault:\n"
-                    + "Neither kube role nor both role and secret ID were provided."
-                )
+        else:
+            raise ValueError(
+                "There is no way to log in to vault:\n"
+                + "Neither kube role nor both role and secret ID were provided."
+            )
 
     def _check_auth(self):
         """Check if authentication timed out and re-authenticate if needed"""
