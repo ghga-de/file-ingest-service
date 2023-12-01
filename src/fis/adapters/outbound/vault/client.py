@@ -36,12 +36,12 @@ class VaultConfig(BaseSettings):
         description="URL of the vault instance to connect to",
     )
     vault_role_id: Optional[SecretStr] = Field(
-        None,
+        default=None,
         examples=["example_role"],
         description="Vault role ID to access a specific prefix",
     )
     vault_secret_id: Optional[SecretStr] = Field(
-        None,
+        default=None,
         examples=["example_secret"],
         description="Vault secret ID to access a specific prefix",
     )
@@ -58,12 +58,12 @@ class VaultConfig(BaseSettings):
         + " be stored in the vault.",
     )
     vault_kube_role: Optional[str] = Field(
-        None,
+        default=None,
         examples=["file-ingest-role"],
         description="Vault role name used for Kubernetes authentication",
     )
     service_account_token_path: Path = Field(
-        "/var/run/secrets/kubernetes.io/serviceaccount/token",
+        default="/var/run/secrets/kubernetes.io/serviceaccount/token",
         description="Path to service account token used by kube auth adapter.",
     )
 
