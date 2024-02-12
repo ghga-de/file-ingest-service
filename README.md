@@ -1,4 +1,3 @@
-
 [![tests](https://github.com/ghga-de/file-ingest-service/actions/workflows/tests.yaml/badge.svg)](https://github.com/ghga-de/file-ingest-service/actions/workflows/tests.yaml)
 [![Coverage Status](https://coveralls.io/repos/github/ghga-de/file-ingest-service/badge.svg?branch=main)](https://coveralls.io/github/ghga-de/file-ingest-service?branch=main)
 
@@ -7,8 +6,6 @@
 File Ingest Service - A lightweight service to propagate file upload metadata to the GHGA file backend services
 
 ## Description
-
-<!-- Please provide a short overview of the features of this service.-->
 
 The File Ingest Service provides an endpoint to populate the Encryption Key Store,
 Internal File Registry and Download Controller with output metadata from the S3 upload
@@ -21,13 +18,13 @@ We recommend using the provided Docker container.
 
 A pre-build version is available at [docker hub](https://hub.docker.com/repository/docker/ghga/file-ingest-service):
 ```bash
-docker pull ghga/file-ingest-service:1.1.1
+docker pull ghga/file-ingest-service:1.1.2
 ```
 
 Or you can build the container yourself from the [`./Dockerfile`](./Dockerfile):
 ```bash
 # Execute in the repo's root dir:
-docker build -t ghga/file-ingest-service:1.1.1 .
+docker build -t ghga/file-ingest-service:1.1.2 .
 ```
 
 For production-ready deployment, we recommend using Kubernetes, however,
@@ -35,7 +32,7 @@ for simple use cases, you could execute the service using docker
 on a single server:
 ```bash
 # The entrypoint is preconfigured:
-docker run -p 8080:8080 ghga/file-ingest-service:1.1.1 --help
+docker run -p 8080:8080 ghga/file-ingest-service:1.1.2 --help
 ```
 
 If you prefer not to use containers, you may install the service from source:
