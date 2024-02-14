@@ -59,6 +59,20 @@ paths:
       description: Decrypt payload, process metadata, file secret id and send success
         event
       operationId: ingestFileUploadMetadata
+      parameters:
+      - in: query
+        name: service_config
+        required: true
+        schema:
+          properties:
+            config_yaml:
+              anyOf:
+              - format: path
+                type: string
+              - type: 'null'
+              title: Config Yaml
+          title: Service Config
+          type: object
       requestBody:
         content:
           application/json:
@@ -88,6 +102,20 @@ paths:
       description: Decrypt payload and deposit file secret in exchange for a secret
         id
       operationId: ingestSecret
+      parameters:
+      - in: query
+        name: service_config
+        required: true
+        schema:
+          properties:
+            config_yaml:
+              anyOf:
+              - format: path
+                type: string
+              - type: 'null'
+              title: Config Yaml
+          title: Service Config
+          type: object
       requestBody:
         content:
           application/json:
@@ -130,6 +158,20 @@ paths:
       description: Decrypt payload, process metadata, file secret and send success
         event
       operationId: ingestLegacyFileUploadMetadata
+      parameters:
+      - in: query
+        name: service_config
+        required: true
+        schema:
+          properties:
+            config_yaml:
+              anyOf:
+              - format: path
+                type: string
+              - type: 'null'
+              title: Config Yaml
+          title: Service Config
+          type: object
       requestBody:
         content:
           application/json:

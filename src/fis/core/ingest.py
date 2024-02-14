@@ -95,7 +95,7 @@ class UploadMetadataProcessorBase(
 class LegacyUploadMetadataProcessor(UploadMetadataProcessorBase):
     """Handler for S3 upload metadata processing"""
 
-    async def decrypt_payload(
+    async def decrypt_payload(  # type: ignore
         self, *, encrypted: models.EncryptedPayload
     ) -> models.LegacyUploadMetadata:
         """Decrypt upload metadata using private key"""

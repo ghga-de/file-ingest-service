@@ -23,7 +23,7 @@ UploadMetadataModel = TypeVar("UploadMetadataModel", bound=models.UploadMetadata
 
 
 class UploadMetadataProcessorPort(Generic[UploadMetadataModel]):
-    """Port for"""
+    """Port for S3 upload metadata processor"""
 
     class DecryptionError(RuntimeError):
         """Thrown when decryption with the provided private key failed"""
@@ -54,3 +54,13 @@ class UploadMetadataProcessorPort(Generic[UploadMetadataModel]):
     @abstractmethod
     async def store_secret(self, *, file_secret: str) -> str:
         """Communicate with HashiCorp Vault to store file secret and get secret ID"""
+
+    @abstractmethod
+    async def decrypt_secret(self, *, encrypted: models.EncryptedPayload) -> str:
+        """Decrypt file secret payload"""
+
+    @abstractmethod
+    async def decrypt_payload(
+        self, *, encrypted: models.EncryptedPayload
+    ) -> models.UploadMetadata:
+        """Decrypt upload metadata using private key"""
