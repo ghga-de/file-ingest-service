@@ -30,14 +30,17 @@ from fis.adapters.outbound.event_pub import EventPubTranslator
 from fis.adapters.outbound.vault import VaultAdapter
 from fis.config import Config
 from fis.core.ingest import LegacyUploadMetadataProcessor, UploadMetadataProcessor
-from fis.ports.inbound.ingest import UploadMetadataProcessorPort
+from fis.ports.inbound.ingest import (
+    LegacyUploadMetadataProcessorPort,
+    UploadMetadataProcessorPort,
+)
 
 
 @asynccontextmanager
 async def prepare_core(
     *, config: Config
 ) -> AsyncGenerator[
-    tuple[UploadMetadataProcessorPort, LegacyUploadMetadataProcessor], None
+    tuple[UploadMetadataProcessorPort, LegacyUploadMetadataProcessorPort], None
 ]:
     """Constructs and initializes all core components and their outbound dependencies."""
     vault_adapter = VaultAdapter(config=config)
@@ -49,7 +52,7 @@ async def prepare_core(
                 event_publisher=event_publisher,
                 vault_adapter=vault_adapter,
             ),
-            LegacyUploadMetadataProcessor(  # type: ignore [abstract]
+            LegacyUploadMetadataProcessor(
                 config=config,
                 event_publisher=event_publisher,
                 vault_adapter=vault_adapter,
@@ -61,7 +64,7 @@ def prepare_core_with_override(
     *,
     config: Config,
     core_override: Optional[
-        tuple[UploadMetadataProcessorPort, LegacyUploadMetadataProcessor]
+        tuple[UploadMetadataProcessorPort, LegacyUploadMetadataProcessorPort]
     ] = None,
 ):
     """Resolve the prepare_core context manager based on config and override (if any)."""
@@ -77,7 +80,7 @@ async def prepare_rest_app(
     *,
     config: Config,
     core_override: Optional[
-        tuple[UploadMetadataProcessorPort, LegacyUploadMetadataProcessor]
+        tuple[UploadMetadataProcessorPort, LegacyUploadMetadataProcessorPort]
     ] = None,
 ) -> AsyncGenerator[FastAPI, None]:
     """Construct and initialize a REST API app along with all its dependencies.

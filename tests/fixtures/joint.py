@@ -29,10 +29,12 @@ from ghga_service_commons.utils.simple_token import generate_token_and_hash
 from hexkit.providers.akafka.testutils import KafkaFixture, kafka_fixture  # noqa: F401
 
 from fis.config import Config
-from fis.core.ingest import LegacyUploadMetadataProcessor
 from fis.core.models import UploadMetadataBase
 from fis.inject import prepare_core, prepare_rest_app
-from fis.ports.inbound.ingest import UploadMetadataProcessorPort
+from fis.ports.inbound.ingest import (
+    LegacyUploadMetadataProcessorPort,
+    UploadMetadataProcessorPort,
+)
 from tests.fixtures.config import get_config
 
 TEST_PAYLOAD = UploadMetadataBase(
@@ -59,7 +61,7 @@ class JointFixture:
     rest_client: httpx.AsyncClient
     s3_endpoint_alias: str
     upload_metadata_processor: UploadMetadataProcessorPort
-    legacy_upload_metadata_processor: LegacyUploadMetadataProcessor
+    legacy_upload_metadata_processor: LegacyUploadMetadataProcessorPort
 
 
 @pytest_asyncio.fixture

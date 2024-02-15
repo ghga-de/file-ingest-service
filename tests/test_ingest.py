@@ -22,6 +22,10 @@ import pytest
 from ghga_service_commons.utils.crypt import encrypt, generate_key_pair
 
 from fis.core.models import EncryptedPayload, LegacyUploadMetadata, UploadMetadata
+from fis.ports.inbound.ingest import (
+    DecryptionError,
+    WrongDecryptedFormatError,
+)
 from tests.fixtures.joint import (  # noqa: F401
     JointFixture,
     KafkaFixture,
@@ -85,9 +89,7 @@ async def test_decryption_sad(joint_fixture: JointFixture):  # noqa: F811
         )
     )
 
-    with pytest.raises(
-        joint_fixture.legacy_upload_metadata_processor.WrongDecryptedFormatError
-    ):
+    with pytest.raises(WrongDecryptedFormatError):
         await joint_fixture.legacy_upload_metadata_processor.decrypt_payload(
             encrypted=encrypted_payload
         )
@@ -104,7 +106,7 @@ async def test_decryption_sad(joint_fixture: JointFixture):  # noqa: F811
         payload=encrypt(data=payload.model_dump_json(), key=keypair2.public)
     )
 
-    with pytest.raises(joint_fixture.legacy_upload_metadata_processor.DecryptionError):
+    with pytest.raises(DecryptionError):
         await joint_fixture.legacy_upload_metadata_processor.decrypt_payload(
             encrypted=encrypted_payload
         )
@@ -121,9 +123,7 @@ async def test_legacy_decryption_sad(joint_fixture: JointFixture):  # noqa: F811
         )
     )
 
-    with pytest.raises(
-        joint_fixture.upload_metadata_processor.WrongDecryptedFormatError
-    ):
+    with pytest.raises(WrongDecryptedFormatError):
         await joint_fixture.upload_metadata_processor.decrypt_payload(
             encrypted=encrypted_payload
         )
@@ -140,7 +140,7 @@ async def test_legacy_decryption_sad(joint_fixture: JointFixture):  # noqa: F811
         payload=encrypt(data=payload.model_dump_json(), key=keypair2.public)
     )
 
-    with pytest.raises(joint_fixture.upload_metadata_processor.DecryptionError):
+    with pytest.raises(DecryptionError):
         await joint_fixture.upload_metadata_processor.decrypt_payload(
             encrypted=encrypted_payload
         )

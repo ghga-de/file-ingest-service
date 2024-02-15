@@ -24,6 +24,11 @@ from fis.adapters.inbound.fastapi_.http_authorization import (
     require_token,
 )
 from fis.core.models import EncryptedPayload
+from fis.ports.inbound.ingest import (
+    DecryptionError,
+    VaultCommunicationError,
+    WrongDecryptedFormatError,
+)
 
 router = APIRouter()
 
@@ -59,10 +64,7 @@ async def ingest_legacy_metadata(
         decrypted_metadata = await upload_metadata_processor.decrypt_payload(
             encrypted=encrypted_payload
         )
-    except (
-        upload_metadata_processor.DecryptionError,
-        upload_metadata_processor.WrongDecryptedFormatError,
-    ) as error:
+    except (DecryptionError, WrongDecryptedFormatError) as error:
         raise HTTPException(status_code=422, detail=str(error)) from error
 
     file_secret = decrypted_metadata.file_secret
@@ -71,7 +73,7 @@ async def ingest_legacy_metadata(
         secret_id = await upload_metadata_processor.store_secret(
             file_secret=file_secret
         )
-    except upload_metadata_processor.VaultCommunicationError as error:
+    except VaultCommunicationError as error:
         raise HTTPException(status_code=500, detail=str(error)) from error
 
     await upload_metadata_processor.populate_by_event(
@@ -100,10 +102,7 @@ async def ingest_metadata(
         decrypted_metadata = await upload_metadata_processor.decrypt_payload(
             encrypted=encrypted_payload
         )
-    except (
-        upload_metadata_processor.DecryptionError,
-        upload_metadata_processor.WrongDecryptedFormatError,
-    ) as error:
+    except (DecryptionError, WrongDecryptedFormatError) as error:
         raise HTTPException(status_code=422, detail=str(error)) from error
 
     secret_id = decrypted_metadata.secret_id
