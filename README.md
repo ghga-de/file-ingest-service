@@ -49,6 +49,41 @@ fis --help
 ### Parameters
 
 The service requires the following configuration parameters:
+- **`log_level`** *(string)*: The minimum log level to capture. Must be one of: `["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE"]`. Default: `"INFO"`.
+
+- **`service_name`** *(string)*: Default: `"fis"`.
+
+- **`service_instance_id`** *(string)*: A string that uniquely identifies this instance across all instances of this service. A globally unique Kafka client ID will be created by concatenating the service_name and the service_instance_id.
+
+
+  Examples:
+
+  ```json
+  "germany-bw-instance-001"
+  ```
+
+
+- **`log_format`**: If set, will replace JSON formatting with the specified string format. If not set, has no effect. In addition to the standard attributes, the following can also be specified: timestamp, service, instance, level, correlation_id, and details. Default: `null`.
+
+  - **Any of**
+
+    - *string*
+
+    - *null*
+
+
+  Examples:
+
+  ```json
+  "%(timestamp)s - %(service)s - %(level)s - %(message)s"
+  ```
+
+
+  ```json
+  "%(asctime)s - Severity: %(levelno)s - %(msg)s"
+  ```
+
+
 - **`vault_url`** *(string)*: URL of the vault instance to connect to.
 
 
@@ -136,18 +171,6 @@ The service requires the following configuration parameters:
   - **Items** *(string)*
 
 - **`selected_storage_alias`** *(string)*: S3 endpoint alias of the object storage node the bucket and object(s) corresponding to the upload metadata have been uploaded to. This should point to a node containing a staging bucket.
-
-- **`service_name`** *(string)*: Default: `"fis"`.
-
-- **`service_instance_id`** *(string)*: A string that uniquely identifies this instance across all instances of this service. A globally unique Kafka client ID will be created by concatenating the service_name and the service_instance_id.
-
-
-  Examples:
-
-  ```json
-  "germany-bw-instance-001"
-  ```
-
 
 - **`kafka_servers`** *(array)*: A list of connection strings to connect to Kafka bootstrap servers.
 
