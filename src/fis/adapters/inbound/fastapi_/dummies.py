@@ -23,8 +23,10 @@ from fastapi import Depends
 from ghga_service_commons.api.di import DependencyDummy
 
 from fis.config import Config
-from fis.core.ingest import LegacyUploadMetadataProcessor
-from fis.ports.inbound.ingest import UploadMetadataProcessorPort
+from fis.ports.inbound.ingest import (
+    LegacyUploadMetadataProcessorPort,
+    UploadMetadataProcessorPort,
+)
 
 config_dummy = DependencyDummy("config_dummy")
 upload_processor_port = DependencyDummy("upload_processor_port")
@@ -37,5 +39,5 @@ UploadProcessorPort = Annotated[
 ]
 
 LegacyUploadProcessor = Annotated[
-    LegacyUploadMetadataProcessor, Depends(legacy_upload_processor)
+    LegacyUploadMetadataProcessorPort, Depends(legacy_upload_processor)
 ]
