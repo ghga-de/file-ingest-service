@@ -57,7 +57,7 @@ class VaultConfig(BaseSettings):
         description="Path without leading or trailing slashes where secrets should"
         + " be stored in the vault.",
     )
-    vault_secrets_mount: str = Field(
+    vault_secrets_mount_point: str = Field(
         default="secret",
         examples=["secret"],
         description="Name used to address the secret engine under a custom mount path.",
@@ -80,7 +80,7 @@ class VaultAdapter(VaultAdapterPort):
         """Initialized approle based client and login"""
         self._client = hvac.Client(url=config.vault_url, verify=config.vault_verify)
         self._path = config.vault_path
-        self._secrets_mount = config.vault_secrets_mount
+        self._secrets_mount = config.vault_secrets_mount_point
 
         self._kube_role = config.vault_kube_role
         if self._kube_role:
