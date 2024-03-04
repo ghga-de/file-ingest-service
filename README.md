@@ -144,6 +144,16 @@ The service requires the following configuration parameters:
 
 - **`vault_path`** *(string)*: Path without leading or trailing slashes where secrets should be stored in the vault.
 
+- **`vault_secrets_mount`** *(string)*: Name used to address the secret engine under a custom mount path. Default: `"secret"`.
+
+
+  Examples:
+
+  ```json
+  "secret"
+  ```
+
+
 - **`vault_kube_role`**: Vault role name used for Kubernetes authentication. Default: `null`.
 
   - **Any of**
