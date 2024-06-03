@@ -14,6 +14,7 @@
 # limitations under the License.
 """Provides client side functionality for interaction with HashiCorp Vault"""
 
+import logging
 from pathlib import Path
 from typing import Union
 from uuid import uuid4
@@ -25,6 +26,8 @@ from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings
 
 from fis.ports.outbound.vault.client import VaultAdapterPort
+
+log = logging.getLogger(__name__)
 
 
 class VaultConfig(BaseSettings):
@@ -95,6 +98,7 @@ class VaultAdapter(VaultAdapterPort):
     def _check_auth(self):
         """Check if authentication timed out and re-authenticate if needed"""
         if not self._client.is_authenticated():
+            log.debug("Logging in to vault at %s", self._client.url)
             self._login()
 
     def _login(self):
@@ -114,6 +118,7 @@ class VaultAdapter(VaultAdapterPort):
         Store a secret under a subpath of the given prefix.
         Generates a UUID4 as key, uses it for the subpath and returns it.
         """
+        log.debug("Storing secret in vault under path: %s", self._path)
         key = str(uuid4())
 
         self._check_auth()
@@ -125,6 +130,8 @@ class VaultAdapter(VaultAdapterPort):
             )
         except hvac.exceptions.InvalidRequest as exc:
             raise self.SecretInsertionError() from exc
+        except Exception as general_error:
+            log.error("An unexpected error occurred: %s", general_error)
         return key
 
     @field_validator("vault_verify")

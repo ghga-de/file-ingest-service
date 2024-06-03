@@ -15,6 +15,7 @@
 """Functionality relating to S3 upload metadata processing"""
 
 import json
+import logging
 from typing import Generic
 
 from ghga_service_commons.utils.crypt import decrypt
@@ -26,6 +27,8 @@ from fis.core import models
 from fis.ports.inbound.ingest import UploadMetadataModel, UploadMetadataProcessorPort
 from fis.ports.outbound.event_pub import EventPublisherPort
 from fis.ports.outbound.vault.client import VaultAdapterPort
+
+log = logging.getLogger(__name__)
 
 
 class ServiceConfig(BaseSettings):
@@ -87,9 +90,13 @@ class UploadMetadataProcessorBase(
     async def store_secret(self, *, file_secret: str) -> str:
         """Communicate with HashiCorp Vault to store file secret and get secret ID"""
         try:
+            log.debug("Communicating with vault to store secret...")
             return self._vault_adapter.store_secret(secret=file_secret)
         except self._vault_adapter.SecretInsertionError as error:
             raise self.VaultCommunicationError(message=str(error)) from error
+        except Exception as general_error:
+            log.error("An unexpected error occurred: %s", general_error)
+            raise
 
 
 class LegacyUploadMetadataProcessor(UploadMetadataProcessorBase):
