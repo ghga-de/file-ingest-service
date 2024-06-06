@@ -174,13 +174,13 @@ class UploadMetadataProcessor(UploadMetadataProcessorPort):
 
     async def store_secret(self, *, file_secret: str) -> str:
         """Communicate with HashiCorp Vault to store file secret and get secret ID"""
-        print("Store secret.")
         try:
-            print("Trying to store secret.")
+            log.debug("UploadMetadataProcessor: Storing secret %s", file_secret)
             return self._vault_adapter.store_secret(secret=file_secret)
         except self._vault_adapter.SecretInsertionError as error:
             comms_error = VaultCommunicationError(message=str(error))
-            print(comms_error)
-            print("Error storing secret.")
-            log.error(comms_error)
+            log.error("UploadMetadataProcessor: Error storing secret %s", comms_error)
             raise comms_error from error
+        except Exception as general_error:
+            log.error("UploadMetadataProcessor: Error storing secret %s", general_error)
+            raise general_error

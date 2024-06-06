@@ -14,6 +14,7 @@
 # limitations under the License.
 """Provides client side functionality for interaction with HashiCorp Vault"""
 
+import logging
 from pathlib import Path
 from typing import Optional, Union
 from uuid import uuid4
@@ -25,6 +26,8 @@ from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings
 
 from fis.ports.outbound.vault.client import VaultAdapterPort
+
+log = logging.getLogger(__name__)
 
 
 class VaultConfig(BaseSettings):
@@ -99,22 +102,21 @@ class VaultAdapter(VaultAdapterPort):
 
     def _check_auth(self):
         """Check if authentication timed out and re-authenticate if needed"""
-        print("Adapter: checking authentication")
+        log.debug("VaultAdapter: Checking authentication")
         if not self._client.is_authenticated():
             self._login()
 
     def _login(self):
         """Log in using Kubernetes Auth or AppRole"""
-        print("Adapter: login")
+        log.debug("VaultAdapter: login")
         if self._kube_role:
-            print("Adapter: kube role login")
+            log.debug("VaultAdapter: kube log in %s", self._kube_role)
 
             with self._service_account_token_path.open() as token_file:
                 jwt = token_file.read()
             self._kube_adapter.login(role=self._kube_role, jwt=jwt)
-            print("Adapter: logged in")
         else:
-            print("Adapter: approle log in")
+            log.debug("VaultAdapter: approle log in %s", self._role_id)
             self._client.auth.approle.login(
                 role_id=self._role_id, secret_id=self._secret_id
             )
@@ -124,13 +126,14 @@ class VaultAdapter(VaultAdapterPort):
         Store a secret under a subpath of the given prefix.
         Generates a UUID4 as key, uses it for the subpath and returns it.
         """
-        print("Adapter: store secret")
         key = str(uuid4())
         self._check_auth()
 
         try:
-            print("Adapter: try store secret")
             # set cas to 0 as we only want a static secret
+            log.debug(
+                "VaultAdapter: Storing secret %s under %s/%s", secret, self._path, key
+            )
             self._client.secrets.kv.v2.create_or_update_secret(
                 path=f"{self._path}/{key}",
                 secret={key: secret},
@@ -138,9 +141,11 @@ class VaultAdapter(VaultAdapterPort):
                 mount_point=self._secrets_mount_point,
             )
         except hvac.exceptions.InvalidRequest as exc:
-            print(f"Adapter: {exc}")
+            log.error("VaultAdapter: Error storing secret %s", exc)
             raise self.SecretInsertionError() from exc
-        print(key)
+        except Exception as general_error:
+            log.error("VaultAdapter: Error storing secret %s", general_error)
+            raise general_error
         return key
 
     @field_validator("vault_verify")
