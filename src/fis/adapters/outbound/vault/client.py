@@ -14,6 +14,7 @@
 # limitations under the License.
 """Provides client side functionality for interaction with HashiCorp Vault"""
 
+import logging
 from pathlib import Path
 from typing import Optional, Union
 from uuid import uuid4
@@ -25,6 +26,8 @@ from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings
 
 from fis.ports.outbound.vault.client import VaultAdapterPort
+
+log = logging.getLogger(__name__)
 
 
 class VaultConfig(BaseSettings):
@@ -125,6 +128,7 @@ class VaultAdapter(VaultAdapterPort):
 
         try:
             # set cas to 0 as we only want a static secret
+            log.debug("Storing secret %s under %s", secret, key)
             self._client.secrets.kv.v2.create_or_update_secret(
                 path=f"{self._path}/{key}",
                 secret={key: secret},
@@ -133,6 +137,9 @@ class VaultAdapter(VaultAdapterPort):
             )
         except hvac.exceptions.InvalidRequest as exc:
             raise self.SecretInsertionError() from exc
+        except Exception as general_error:
+            log.error("Error storing secret: %s", general_error)
+            raise
         return key
 
     @field_validator("vault_verify")

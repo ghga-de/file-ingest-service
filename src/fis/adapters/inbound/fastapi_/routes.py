@@ -14,6 +14,7 @@
 # limitations under the License.
 """FastAPI routes for S3 upload metadata ingest"""
 
+import logging
 from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Response, status
@@ -31,6 +32,8 @@ from fis.ports.inbound.ingest import (
 )
 
 router = APIRouter()
+
+log = logging.getLogger(__name__)
 
 
 @router.get(
@@ -128,9 +131,11 @@ async def ingest_secret(
     _token: Annotated[IngestTokenAuthContext, require_token],
 ):
     """Decrypt payload and deposit file secret in exchange for a secret id"""
+    log.debug("Decrypting payload")
     file_secret = await upload_metadata_processor.decrypt_secret(
         encrypted=encrypted_payload
     )
 
+    log.debug("Decrypting payload %s", file_secret)
     secret_id = await upload_metadata_processor.store_secret(file_secret=file_secret)
     return {"secret_id": secret_id}
